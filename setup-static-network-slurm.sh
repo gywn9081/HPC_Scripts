@@ -6,13 +6,13 @@ echo "=== SLURM Static Network Bootstrap ==="
 # ----------- CONFIG (EDIT PER NODE) ----------------
 HOSTNAME="compute02"
 
-NODE_IP="10.42.0.102/24"
-GATEWAY="10.42.0.1"
+NODE_IP="10.42.0.10X/24"
+GATEWAY="10.42.0.102"
 
 HEAD_HOSTNAME="headnode"
 HEAD_IP="10.42.0.111"
 
-DNS_SERVERS="10.42.0.1,8.8.8.8"
+DNS_SERVERS="1.1.1.1,8.8.8.8"
 
 # Cluster host list (IP hostname)
 CLUSTER_HOSTS="
@@ -62,13 +62,6 @@ network:
       nameservers:
         addresses: [$DNS_SERVERS]
       optional: true
-  wifis:
-    wlan0:
-      dhcp4: true
-      optional: true
-      access-points:
-        "TigerWiFi-Guest":
-          password: "TrumanTiger"
 EOF
 
 # Disable cloud-init netplan if present
