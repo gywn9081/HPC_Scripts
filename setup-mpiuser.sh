@@ -41,5 +41,6 @@ if id "$USERNAME" &>/dev/null; then
 
 else
     echo "User $USERNAME does not exist. Creating with UID $EXPECTED_UID..."
-    adduser --uid "$EXPECTED_UID" "$USERNAME"
+    # Could switch this to useradd
+    adduser --gecos "" --uid "$EXPECTED_UID" "$USERNAME"
 fi
