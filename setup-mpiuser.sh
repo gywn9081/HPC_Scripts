@@ -1,4 +1,4 @@
-#!/bin/bash/env bash
+#!/usr/bin/env bash
 
 # configs ------------------------------
 USERNAME="mpiuser"
@@ -13,6 +13,12 @@ if [ -n "$EXISTING_USER_WITH_UID" ] && [ "$EXISTING_USER_WITH_UID" != "$USERNAME
     exit 1
 fi
 
+# Must be run as root
+if [ "$EUID" -ne 0 ]; then
+  echo "Run as root: sudo ./setup-static-network-slurm.sh"
+  exit 1
+fi
+
 # Check if user exists
 if id "$USERNAME" &>/dev/null; then
 
@@ -24,16 +30,16 @@ if id "$USERNAME" &>/dev/null; then
         echo "User $USERNAME exists but has UID $CURRENT_UID."
         echo "Changing UID to $EXPECTED_UID..."
 
-        sudo usermod -u "$EXPECTED_UID" "$USERNAME"
+        usermod -u "$EXPECTED_UID" "$USERNAME"
 
         echo "Updating file ownership to match new UID..."
 
-        sudo find / -user "$CURRENT_UID" -exec chown -h "$USERNAME" {} \; 2>/dev/null
+        find / -user "$CURRENT_UID" -exec chown -h "$USERNAME" {} \; 2>/dev/null
 
         echo "UID successfully updated."
     fi
 
 else
     echo "User $USERNAME does not exist. Creating with UID $EXPECTED_UID..."
-    sudo adduser --uid "$EXPECTED_UID" "$USERNAME"
+    adduser --uid "$EXPECTED_UID" "$USERNAME"
 fi
