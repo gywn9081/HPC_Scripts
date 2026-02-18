@@ -1,4 +1,4 @@
-#!/bin/bash/env bash
+#!/usr/bin/env bash
 
 # configs ------------------------------
 echo "=== Master Node Network File System Setup ==="
@@ -19,7 +19,6 @@ if [[ "$(hostname -s)" == "$HEAD_NODE" ]]; then
       if ! dpkg -s nfs-kernel-server &>/dev/null; then
       echo "[HEAD NODE] NFS server not found. Installing..."
       apt-get install -y nfs-kernel-server
-      fi
 fi
 else
       if ! dpkg -s nfs-common &>/dev/null; then
