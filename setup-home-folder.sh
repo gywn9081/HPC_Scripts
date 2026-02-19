@@ -10,15 +10,27 @@ GATEWAY_ADDRESS="10.42.0.1/24"
 
 DIR="/home/$USERNAME"
 EXPORTS_FILE="/etc/exports"
-EXPORT_LINE="$DIR *(rw,sync,no_subtree_check)"
+EXPORT_LINE="$DIR 10.42.0.0/24(rw,sync,no_subtree_check,no_root_squash)"
 FSTAB_FILE="/etc/fstab"
-FSTAB_LINE="${HEAD_NODE}:${DIR} ${DIR} nfs defaults,_netdev 0 0"
+FSTAB_LINE="${HEAD_NODE}:${DIR} ${DIR} nfs defaults,_netdev,hard,intr 0 0"
 # --------------------------------------------------
 
 # Must be run as root
 if [ "$EUID" -ne 0 ]; then
   echo "Run as root: sudo ./setup-home-folder.sh"
   exit 1
+fi
+
+# 0. ENFORCE UID EXPECTATIONS
+if id "$USERNAME" &>/dev/null; then
+    ACTUAL_UID=$(id -u "$USERNAME")
+    if [[ "$ACTUAL_UID" != "$EXPECTED_UID" ]]; then
+        echo "ERROR: $USERNAME has UID $ACTUAL_UID, expected $EXPECTED_UID"
+        exit 1
+    fi
+else
+    echo "ERROR: User $USERNAME does not exist"
+    exit 1
 fi
 
 # 1. ENSURE DIRECTORY EXISTS (All Nodes)
